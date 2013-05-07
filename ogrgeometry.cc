@@ -14,7 +14,7 @@ zend_object_handlers ogrgeometry_object_handlers;
 void ogrgeometry_free_storage(void *object TSRMLS_DC)
 {
   php_ogrgeometry_object *obj = (php_ogrgeometry_object *)object;
-  delete obj->geometry; // currently all pointers here are only references which
+  //delete obj->geometry; // currently all pointers here are only references which
                         // should not be modified
   zend_hash_destroy(obj->std.properties);
   FREE_HASHTABLE(obj->std.properties);
