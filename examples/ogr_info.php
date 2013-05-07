@@ -28,6 +28,13 @@ function showLayerInfo(OGRLayer $layer)
   echo "Feature count: ".$layer->GetFeatureCount()."\n";
   echo "Field count: ".$defn->GetFieldCount()."\n";
   echo "Geometry type: ".$defn->GetGeomType()." (constant to match)\n";
+  $feature = $layer->GetNextFeature();
+  while ($feature) {
+    $geom = $feature->GetGeometryRef();
+    echo "FID:" . $feature->GetFID() . " GEOM: " . $geom->ExportToWkt() . "\n";
+
+    $feature = $layer->GetNextFeature();
+  }
 }
 
 $path =& $_SERVER['argv'][1];
