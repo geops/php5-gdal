@@ -430,11 +430,11 @@ PHP_METHOD(OGRDataSource, Close)
   datasource = obj->datasource;
 
   ////
-  char msg[500];
-  sprintf(msg, "OGRDataSource::DestroyDataSource %x", datasource);
-  php_log_err(msg);
+  //char msg[500];
+  //sprintf(msg, "OGRDataSource::DestroyDataSource %x", datasource);
+  //php_log_err(msg);
   ////
-  //OGRDataSource::DestroyDataSource(datasource);
+  OGRDataSource::DestroyDataSource(datasource);
 }
 
 PHP_METHOD(OGRDataSource, DestroyDataSource)
