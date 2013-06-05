@@ -36,13 +36,26 @@ zend_object_handlers driver_object_handlers;
 // PHP stuff
 //
 
+void php_gdal_ogrsfdriver_release(driver_object *obj)
+{
+  if (obj) {
+    if (obj->driver) {
+      /* owned by GDAL
+      delete obj->driver;
+      obj->driver = NULL;
+      */
+    }
+    efree(obj);
+  }
+}
+
 void ogrsfdriver_free_storage(void *object TSRMLS_DC)
 {
   driver_object *obj = (driver_object *)object;
-  //delete obj->layer; // TODO
   zend_hash_destroy(obj->std.properties);
   FREE_HASHTABLE(obj->std.properties);
-  efree(obj);
+
+  php_gdal_ogrsfdriver_release(obj);
 }
 
 zend_object_value ogrsfdriver_create_handler(zend_class_entry *type TSRMLS_DC)

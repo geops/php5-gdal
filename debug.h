@@ -4,7 +4,7 @@
 #include <cstdio>
 
 // toggle this define to enable/disable the debug mode
-#define DEBUG 1
+// #define DEBUG 1
 
 // these two macros convert macro values to strings
 #define STRINGIFY2(x)   #x
@@ -29,7 +29,7 @@
             php_log_err(debug_msg); \
     }
 
-#define DEBUG_LOG_FUNCTION  DEBUG_LOG("DEBUG: " __FILE__ ":" STRINGIFY(__LINE__) " %s", __func__)
+#define DEBUG_LOG_FUNCTION  DEBUG_LOG("%s", __func__)
 
 #else // no debug
 

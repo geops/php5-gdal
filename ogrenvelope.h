@@ -34,8 +34,10 @@ extern zend_class_entry *gdal_ogrenvelope_ce;
 struct php_ogrenvelope_object {
   zend_object std;
   OGREnvelope *envelope;
+  bool is_reference;
 };
 
+void php_gdal_ogrenvelope_release(php_ogrenvelope_object*);
 void php_gdal_ogrenvelope_startup(INIT_FUNC_ARGS);
 
 #endif /* PHP_OGRENVELOPE_H */

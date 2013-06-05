@@ -39,17 +39,27 @@ zend_object_handlers ogrfeature_object_handlers;
 // PHP stuff
 //
 
+void php_gdal_ogrfeature_release(php_ogrfeature_object *obj) {
+  if (obj) {
+    if (obj->feature) {
+      DEBUG_LOG("Destroying feature %x", obj->feature);
+      OGRFeature::DestroyFeature(obj->feature);
+      obj->feature = NULL;
+    }
+    efree(obj);
+  }
+}
+
 void ogrfeature_free_storage(void *object TSRMLS_DC)
 {
   php_ogrfeature_object *obj = (php_ogrfeature_object *)object;
 
   DEBUG_LOG_FUNCTION
 
-  // TODO: check ownership
-  // OGRFeature::DestroyFeature(obj->feature);
   zend_hash_destroy(obj->std.properties);
   FREE_HASHTABLE(obj->std.properties);
-  efree(obj);
+
+  php_gdal_ogrfeature_release(obj);
 }
 
 zend_object_value ogrfeature_create_handler(zend_class_entry *type TSRMLS_DC)
@@ -410,9 +420,9 @@ PHP_METHOD(OGRFeature, GetGeometryRef)
   if (object_init_ex(return_value, gdal_ogrgeometry_ce) != SUCCESS) {
     RETURN_NULL();
   }
-  // php_log_err("FILE:" __FILE__ " LINE:" STRINGIFY(__LINE__) "\n");
   geom_obj = (php_ogrgeometry_object*) zend_object_store_get_object(return_value TSRMLS_CC);
   geom_obj->geometry = geometry;
+  geom_obj->is_reference = true;
 }
 
 
@@ -430,10 +440,10 @@ PHP_METHOD(OGRFeature, DestroyFeature)
   }
 
   obj = (php_ogrfeature_object *)zend_object_store_get_object(p);
-  if (obj) {
-    feature = obj->feature;
-    OGRFeature::DestroyFeature(feature);
-  }
+
+  DEBUG_LOG("Destroying feature %x via OGRFeature::DestroyFeature call", obj->feature);
+  OGRFeature::DestroyFeature(obj->feature);
+  obj->feature = NULL;
 }
 
 

@@ -37,12 +37,24 @@ zend_object_handlers ogrfeaturedefn_object_handlers;
 // PHP stuff
 //
 
+void php_gdal_ogrfeaturedefn_release(php_ogrfeaturedefn_object *obj)
+{
+  if (obj) {
+    if (obj->featuredefn) {
+      // memory is managed by gdal
+    }
+    efree(obj);
+  }
+
+}
+
 void ogrfeaturedefn_free_storage(void *object TSRMLS_DC)
 {
   php_ogrfeaturedefn_object *obj = (php_ogrfeaturedefn_object *)object;
   zend_hash_destroy(obj->std.properties);
   FREE_HASHTABLE(obj->std.properties);
-  efree(obj);
+
+  php_gdal_ogrfeaturedefn_release(obj);
 }
 
 zend_object_value ogrfeaturedefn_create_handler(zend_class_entry *type TSRMLS_DC)

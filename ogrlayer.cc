@@ -42,23 +42,31 @@ zend_object_handlers ogrlayer_object_handlers;
 // PHP stuff
 //
 
+void php_gdal_ogrlayer_release(php_ogrlayer_object *obj) {
+
+  DEBUG_LOG_FUNCTION
+
+  if (obj) {
+    // the layer itself is owned by the datasource
+    DEBUG_LOG("Destroying Layer %x", obj->layer);
+
+    php_gdal_ogrdatasource_release(obj->datasource_obj);
+    obj->datasource_obj = NULL;
+
+    efree(obj);
+  }
+}
+
 void ogrlayer_free_storage(void *object TSRMLS_DC)
 {
   php_ogrlayer_object *obj = (php_ogrlayer_object *)object;
 
   DEBUG_LOG_FUNCTION
 
-  //delete obj->layer; // TODO
-  ////
-  // char *msg; int i;
-  // i = obj->layer->GetRefCount();
-  // asprintf(&msg, "OGRLayer FREE refc=%d", i);
-  // php_log_err(msg);
-  // free(msg);
-  ////
   zend_hash_destroy(obj->std.properties);
   FREE_HASHTABLE(obj->std.properties);
-  efree(obj);
+
+  php_gdal_ogrlayer_release(obj);
 }
 
 zend_object_value ogrlayer_create_handler(zend_class_entry *type TSRMLS_DC)
@@ -169,6 +177,10 @@ PHP_METHOD(OGRLayer, GetNextFeature)
   obj = (php_ogrlayer_object *)
     zend_object_store_get_object(getThis() TSRMLS_CC);
   layer = obj->layer;
+
+  if (layer == NULL) {
+    RETURN_NULL();
+  }
 
   feature = layer->GetNextFeature();
 
@@ -417,6 +429,7 @@ PHP_METHOD(OGRLayer, GetExtent)
   envelope_obj = (php_ogrenvelope_object*)
     zend_objects_get_address(return_value TSRMLS_CC);
   envelope_obj->envelope = envelope;
+  envelope_obj->is_reference = false;
 }
 
 PHP_METHOD(OGRLayer, TestCapability)

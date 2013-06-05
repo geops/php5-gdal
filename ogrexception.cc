@@ -19,7 +19,7 @@ void php_gdal_ogrexception_startup(INIT_FUNC_ARGS)
 
 void php_gdal_ogr_throw_error_with_message(int error_code, const char *error_message, int strict_error TSRMLS_DC)
 {
-  (void *) strict_error;
+  (int) strict_error;
   zend_throw_exception(gdal_ogrexception_ce, (char*)error_message, error_code TSRMLS_CC);
 }   
 

@@ -51,6 +51,7 @@
 #include "ogrcoordtransform.h"
 #include "ogrfeature.h"
 #include "ogrexception.h"
+#include "debug.h"
 
 static void errorHandler(CPLErr eErrClass, int err_no, const char *msg)
 {
@@ -66,24 +67,16 @@ static void errorHandler(CPLErr eErrClass, int err_no, const char *msg)
   if (eErrClass > 5) {
     eErrClass = (CPLErr) 5;
   }
-  //
-  // char str[1000];
-  // sprintf(str, "GDAL/OGR %s: [%s] %s", classes[eErrClass], types[err_no], msg);
-  // php_log_err(str);
+
+  DEBUG_LOG("GDAL/OGR %s: [%s] %s", classes[eErrClass], types[err_no], msg);
 }
 
 static PHP_INI_MH(onIniChangeGdalData)
 {
-  // php_log_err((char *) "gdal data change");
-  // php_log_err(new_value);
-  ////
-  // char msg[500];
-  // sprintf(msg, "php5-gdal: onIniChangeGdalData: stage=%d [%d, %d, %d]",
-  //         stage, PHP_INI_STAGE_STARTUP, PHP_INI_STAGE_SHUTDOWN, PHP_INI_STAGE_RUNTIME);
-  // php_log_err(msg);
-  // sprintf(msg, "php5-gdal: onIniChangeGdalData: %s", new_value);
-  // php_log_err(msg);
-  ////
+  DEBUG_LOG("php5-gdal: onIniChangeGdalData: stage=%d [%d, %d, %d]",
+           stage, PHP_INI_STAGE_STARTUP, PHP_INI_STAGE_SHUTDOWN, PHP_INI_STAGE_RUNTIME);
+  DEBUG_LOG("php5-gdal: onIniChangeGdalData: %s", new_value);
+
   char const *dataPath = new_value;
   //if (dataPath && dataPath[0]) {
   // CPLSetConfigOption will copy the value string
@@ -95,12 +88,9 @@ static PHP_INI_MH(onIniChangeGdalData)
 
 static PHP_INI_MH(onIniChangeErrorHandler)
 {
-  // char msg[500];
-  // sprintf(msg, "php5-gdal: onIniChangeErrorHandler: stage=%d [%d, %d, %d]",
-  //         stage, PHP_INI_STAGE_STARTUP, PHP_INI_STAGE_SHUTDOWN, PHP_INI_STAGE_RUNTIME);
-  // php_log_err(msg);
-  // sprintf(msg, "php5-gdal: onIniChangeErrorHandler: %s", new_value);
-  // php_log_err(msg);
+  DEBUG_LOG("php5-gdal: onIniChangeErrorHandler: stage=%d [%d, %d, %d]",
+           stage, PHP_INI_STAGE_STARTUP, PHP_INI_STAGE_SHUTDOWN, PHP_INI_STAGE_RUNTIME);
+  DEBUG_LOG("php5-gdal: onIniChangeErrorHandler: %s", new_value);
 
   CPLSetErrorHandler(atoi(new_value) ? errorHandler : NULL);
 
@@ -109,14 +99,10 @@ static PHP_INI_MH(onIniChangeErrorHandler)
 
 static PHP_INI_MH(onIniChangeCplDebug)
 {
-  ////
-  // char msg[500];
-  // sprintf(msg, "php5-gdal: onIniChangeCplDebug: stage=%d [%d, %d, %d]",
-  //         stage, PHP_INI_STAGE_STARTUP, PHP_INI_STAGE_SHUTDOWN, PHP_INI_STAGE_RUNTIME);
-  // php_log_err(msg);
-  // sprintf(msg, "php5-gdal: onIniChangeCplDebug: %s", new_value);
-  // php_log_err(msg);
-  ////
+  DEBUG_LOG("php5-gdal: onIniChangeCplDebug: stage=%d [%d, %d, %d]",
+           stage, PHP_INI_STAGE_STARTUP, PHP_INI_STAGE_SHUTDOWN, PHP_INI_STAGE_RUNTIME);
+  DEBUG_LOG("php5-gdal: onIniChangeCplDebug: %s", new_value);
+
   // CPLSetConfigOption will copy the value string
   CPLSetConfigOption("CPL_DEBUG", atoi(new_value) ? "ON" : "OFF");
 
@@ -145,14 +131,14 @@ static void php_gdal_globals_ctor(zend_gdal_globals *gdal_globals)
   //gdal_globals->some_integer = 0;
   //gdal_globals->some_string = NULL;
   //int zend_hash_init_ex ( HashTable* ht, uint nSize, hash_func_t pHashFunction, dtor_func_t pDestructor, zend_bool persistent, zend_bool bApplyProtection )
-  //php_log_err("php5-gdal: globals_ctor");
-  zend_hash_init_ex(&gdal_globals->ogrDataSources, 0, NULL, PHP_GDAL_OGRDATASOURCE_PTR_DTOR, 1 /* 1 */, 0);
+  DEBUG_LOG("php5-gdal: globals_ctor");
+//  zend_hash_init_ex(&gdal_globals->ogrDataSources, 0, NULL, PHP_GDAL_OGRDATASOURCE_PTR_DTOR, 1 /* 1 */, 0);
 }
 
 static void php_gdal_globals_dtor(zend_gdal_globals *gdal_globals)
 {
-  //php_log_err("php5-gdal: globals_dtor");
-  zend_hash_destroy(&gdal_globals->ogrDataSources);
+  DEBUG_LOG("php5-gdal: globals_dtor");
+  //zend_hash_destroy(&gdal_globals->ogrDataSources);
 }
 
 
@@ -264,7 +250,7 @@ PHP_MINIT_FUNCTION(gdal)
 
 PHP_MSHUTDOWN_FUNCTION(gdal)
 {
-  //printf("Mshutdown!\n");
+  DEBUG_LOG("Mshutdown!");
   /* uncomment this line if you have INI entries
      UNREGISTER_INI_ENTRIES();
   */
@@ -284,39 +270,6 @@ PHP_RINIT_FUNCTION(gdal)
 /* Remove if there's nothing to do at request end */
 PHP_RSHUTDOWN_FUNCTION(gdal)
 {
-  // //--DEBUG START
-  // char *msg;
-  // int i, i1, i2, c;
-  // OGRSFDriverRegistrar *registrar = OGRSFDriverRegistrar::GetRegistrar();
-  // OGRDataSource *ds;
-  // c = registrar->GetOpenDSCount();
-  // asprintf(&msg, "RSHUTDOWN openDS count=%d", c);
-  // php_log_err(msg);
-  // free(msg);
-  // for (i = 0; i < c; ++i) {
-  //   ds = registrar->GetOpenDS(i);
-  //   i1 = ds->GetRefCount();
-  //   asprintf(&msg, "RSHUTDOWN openDS[%d]: refC=%d", i, i1);
-  //   php_log_err(msg);
-  //   free(msg);
-  // }
-  // //--DEBUG END
-  ////
-  //char *msg;
-  ////
-  //try//OGRCleanupAll(); -> makes segfault when MapScript is used as well
-  ////
-  // asprintf(&msg, "php5-gdal: after OGRCleanupAll");
-  // php_log_err(msg);
-  // free(msg);
-  ////
-  //try//zend_hash_clean(&GDAL_G(ogrDataSources));
-  //ogrdatasource_destroy_all();
-  ////
-  // asprintf(&msg, "php5-gdal: after zend_hash_clean");
-  // php_log_err(msg);
-  // free(msg);
-  ////
   return SUCCESS;
 }
 

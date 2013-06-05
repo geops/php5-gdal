@@ -36,6 +36,7 @@ struct php_ogrfielddefn_object {
   OGRFieldDefn *fielddefn;
 };
 
+void php_gdal_ogrfielddefn_release(php_ogrfielddefn_object *);
 void php_gdal_ogrfielddefn_startup(INIT_FUNC_ARGS);
 
 #endif /* PHP_OGRFIELDDEFN_H */

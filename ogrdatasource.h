@@ -37,6 +37,7 @@ struct php_ogrdatasource_object {
   ulong hashIndex;
 };
 
+void php_gdal_ogrdatasource_release(php_ogrdatasource_object *);
 void php_gdal_ogrdatasource_startup(INIT_FUNC_ARGS);
 void php_gdal_ogrdatasource_add_to_hash(php_ogrdatasource_object *obj);
 void php_gdal_ogrdatasource_ptr_dtor(void **ptr);

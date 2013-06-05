@@ -28,14 +28,18 @@
 
 #include <ogrsf_frmts.h>
 #include "php.h"
+#include "ogrdatasource.h"
 
 extern zend_class_entry *gdal_ogrlayer_ce;
 
 struct php_ogrlayer_object {
   zend_object std;
   OGRLayer *layer;
+
+  php_ogrdatasource_object * datasource_obj;
 };
 
+void php_gdal_ogrlayer_release(php_ogrlayer_object *);
 void php_gdal_ogrlayer_startup(INIT_FUNC_ARGS);
 
 #endif /* PHP_OGRLAYER_H */

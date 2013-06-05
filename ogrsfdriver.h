@@ -36,6 +36,7 @@ struct driver_object {
   OGRSFDriver *driver;
 };
 
+void php_gdal_ogrsfdriver_release(driver_object*);
 void php_gdal_ogrsfdriver_startup(INIT_FUNC_ARGS);
 
 #endif /* OGRSFDRIVER_H */

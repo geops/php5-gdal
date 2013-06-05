@@ -36,6 +36,7 @@ struct php_ogrfeaturedefn_object {
   OGRFeatureDefn *featuredefn;
 };
 
+void php_gdal_ogrfeaturedefn_release(php_ogrfeaturedefn_object *);
 void php_gdal_ogrfeaturedefn_startup(INIT_FUNC_ARGS);
 
 #endif /* PHP_OGRFEATUREDEFN_H */

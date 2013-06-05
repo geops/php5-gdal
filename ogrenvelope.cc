@@ -27,6 +27,7 @@
 #include "php_gdal.h"
 #include <ogr_core.h>
 #include "ogrenvelope.h"
+#include "debug.h"
 
 zend_class_entry *gdal_ogrenvelope_ce;
 zend_object_handlers ogrenvelope_object_handlers;
@@ -35,13 +36,28 @@ zend_object_handlers ogrenvelope_object_handlers;
 // PHP stuff
 //
 
+void php_gdal_ogrenvelope_release(php_ogrenvelope_object *obj)
+{
+  if (obj) {
+    if (obj->envelope) {
+      if (!obj->is_reference) {
+        DEBUG_LOG("Deleting OGREnvelope %x", obj->envelope);
+        delete obj->envelope;
+        obj->envelope = NULL;
+      }
+    }
+    efree(obj);
+  }
+}
+
 void ogrenvelope_free_storage(void *object TSRMLS_DC)
 {
   php_ogrenvelope_object *obj = (php_ogrenvelope_object *)object;
-  //delete obj->envelope; // TODO
+
   zend_hash_destroy(obj->std.properties);
   FREE_HASHTABLE(obj->std.properties);
-  efree(obj);
+
+  php_gdal_ogrenvelope_release(obj);
 }
 
 zend_object_value ogrenvelope_create_handler(zend_class_entry *type TSRMLS_DC)

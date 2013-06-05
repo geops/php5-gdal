@@ -30,6 +30,7 @@
 #include "ogrsfdriverregistrar.h"
 #include "ogrsfdriver.h"
 #include "ogrdatasource.h"
+#include "debug.h"
 
 zend_class_entry *gdal_ogrsfdriverregistrar_ce;
 zend_object_handlers registrar_object_handlers;
@@ -46,7 +47,7 @@ struct registrar_object {
 void ogrsfdriverregistrar_free_storage(void *object TSRMLS_DC)
 {
   registrar_object *obj = (registrar_object *)object;
-  //delete obj->layer; // singleton object - only the PHP obj is destroyed
+  // singleton object - only the PHP obj is destroyed
   zend_hash_destroy(obj->std.properties);
   FREE_HASHTABLE(obj->std.properties);
   efree(obj);
@@ -232,6 +233,7 @@ PHP_METHOD(OGRSFDriverRegistrar, GetOpenDS)
   datasource_obj = (php_ogrdatasource_object*)
     zend_object_store_get_object(return_value TSRMLS_CC);
   datasource_obj->datasource = datasource;
+  DEBUG_LOG("Setting OGRDatasource on php_ogrdatasource_object %x to %x", datasource_obj, datasource_obj->datasource);
 }
 
 PHP_METHOD(OGRSFDriverRegistrar, AutoLoadDrivers)
@@ -271,7 +273,7 @@ PHP_METHOD(OGRSFDriverRegistrar, GetRegistrar)
 PHP_METHOD(OGRSFDriverRegistrar, Open)
 {
   OGRDataSource *datasource;
-  php_ogrdatasource_object *datasource_obj;
+  php_ogrdatasource_object *datasource_obj = NULL;
   char *ds_name;
   int ds_name_len;
   zend_bool update_mode = 0;
@@ -293,13 +295,9 @@ PHP_METHOD(OGRSFDriverRegistrar, Open)
   if (!datasource) {
     RETURN_NULL();
   }
-  ////
-  // char *msg; int i;
-  // i = datasource->GetRefCount();
-  // asprintf(&msg, "OGRSFDriverRegistrar::Open path=\"%s\" refcount=%d", ds_name, i);
-  // php_log_err(msg);
-  // free(msg);
-  ////
+
+  DEBUG_LOG("OGRSFDriverRegistrar::Open path=\"%s\" refcount=%d", ds_name, datasource->GetRefCount());
+
   if (object_init_ex(return_value, gdal_ogrdatasource_ce) != SUCCESS) {
     RETURN_NULL();
   }
@@ -307,6 +305,7 @@ PHP_METHOD(OGRSFDriverRegistrar, Open)
     //zend_object_store_get_object
     zend_objects_get_address(return_value TSRMLS_CC);
   datasource_obj->datasource = datasource;
+  DEBUG_LOG("Setting OGRDatasource on php_ogrdatasource_object %x to %x", datasource_obj, datasource_obj->datasource);
 
   php_gdal_ogrdatasource_add_to_hash(datasource_obj);
 }

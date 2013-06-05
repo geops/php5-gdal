@@ -6,19 +6,30 @@
 #include "ogrexception.h"
 #include "ogrspatialreference.h"
 #include "ogrgeometry.h"
+#include "debug.h"
 
 zend_class_entry *gdal_ogrgeometry_ce;
 zend_object_handlers ogrgeometry_object_handlers;
 
 
+void php_gdal_ogrgeometry_release(php_ogrgeometry_object * obj)
+{
+  if (obj) {
+    if (!obj->is_reference) {
+      
+    }
+    efree(obj);
+  }
+}
+
 void ogrgeometry_free_storage(void *object TSRMLS_DC)
 {
   php_ogrgeometry_object *obj = (php_ogrgeometry_object *)object;
-  //delete obj->geometry; // currently all pointers here are only references which
-                        // should not be modified
+
   zend_hash_destroy(obj->std.properties);
   FREE_HASHTABLE(obj->std.properties);
-  efree(obj);
+
+  php_gdal_ogrgeometry_release(obj);
 }
 
 
@@ -54,6 +65,8 @@ PHP_METHOD(OGRGeometry, IsValid)
   OGRGeometry *geometry;
   php_ogrgeometry_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     return;
   }
@@ -70,6 +83,8 @@ PHP_METHOD(OGRGeometry, ExportToWkt)
   php_ogrgeometry_object *obj;
   char *ppszDstText;
   char *ret;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     return;
@@ -96,6 +111,8 @@ PHP_METHOD(OGRGeometry, ExportToWkb)
   int wkbSize;
   char * buffer;
   int wkbByteOrder = wkbNDR; // use as default when no byteOrder is specified
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
@@ -132,6 +149,8 @@ PHP_METHOD(OGRGeometry, ExportToJson)
   char *jsonText;
   char *ret;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     return;
   }
@@ -157,6 +176,8 @@ PHP_METHOD(OGRGeometry, ExportToKML)
   php_ogrgeometry_object *obj;
   char *kmlText;
   char *ret;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     return;
@@ -186,6 +207,8 @@ PHP_METHOD(OGRGeometry, ExportToGML)
   char *gmlOptions = NULL;
   int gmlOptionsLen;
   char **papszOptions = NULL;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"s", &gmlOptions, &gmlOptionsLen) == FAILURE) {
@@ -231,6 +254,8 @@ PHP_METHOD(OGRGeometry, GetGeometryName)
   char *ret;
   const char *geomName;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     return;
   }
@@ -249,6 +274,8 @@ PHP_METHOD(OGRGeometry, GetGeometryType)
   OGRGeometry *geometry;
   php_ogrgeometry_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     return;
   }
@@ -263,6 +290,8 @@ PHP_METHOD(OGRGeometry, IsEmpty)
 {
   OGRGeometry *geometry;
   php_ogrgeometry_object *obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     return;
@@ -280,6 +309,8 @@ PHP_METHOD(OGRGeometry, GetSpatialReference)
   php_ogrgeometry_object *obj;
   OGRSpatialReference *spatialreference;
   php_ogrspatialreference_object *spatialreference_obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
