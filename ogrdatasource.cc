@@ -32,14 +32,16 @@
 #include "ogrsfdriver.h"
 #include "ogrlayer.h"
 #include "ogrspatialreference.h"
+#include "debug.h"
 
 zend_class_entry *gdal_ogrdatasource_ce;
 zend_object_handlers ogrdatasource_object_handlers;
 
 void php_gdal_ogrdatasource_add_to_hash(php_ogrdatasource_object *obj)
 {
-  ////
   HashPosition pos;
+
+  DEBUG_LOG_FUNCTION
 
   zend_hash_next_index_insert(&GDAL_G(ogrDataSources),
                               &(obj->datasource),
@@ -50,27 +52,20 @@ void php_gdal_ogrdatasource_add_to_hash(php_ogrdatasource_object *obj)
       != HASH_KEY_IS_LONG) {
     php_log_err("php5-gdal: failed to get hash index for datasource");
   }
-  ////
-  /*
-  char msg[500];
-  sprintf(msg, "php5-gdal: got OGR datasource hash index: %d",
+
+  DEBUG_LOG("php5-gdal: got OGR datasource hash index: %d",
           (int)obj->hashIndex);
-  php_log_err(msg);
-  */
-  ////
-  //zend_hash_num_elements
 }
 
 void php_gdal_ogrdatasource_ptr_dtor(void **ptr)
 {
   OGRDataSource *datasource = (OGRDataSource *)*ptr;
-  ////
-  // char *msg;
-  // asprintf(&msg, "php5-gdal: php_gdal_ogrdatasource_ptr_dtor ############");
-  // php_log_err(msg);
-  // free(msg);
-  ////
-  OGRDataSource::DestroyDataSource(datasource);
+
+  DEBUG_LOG_FUNCTION
+
+  if (datasource) {
+  //  OGRDataSource::DestroyDataSource(datasource);
+  }
 }
 
 //
@@ -81,6 +76,9 @@ void ogrdatasource_free_storage(void *object TSRMLS_DC)
 {
   char *msg;
   int i, i2;
+
+  DEBUG_LOG_FUNCTION
+
   php_ogrdatasource_object *obj = (php_ogrdatasource_object *)object;
 
   // i = obj->datasource->GetRefCount();
@@ -99,6 +97,8 @@ zend_object_value ogrdatasource_create_handler(zend_class_entry *type TSRMLS_DC)
 {
   zval *tmp;
   zend_object_value retval;
+
+  DEBUG_LOG_FUNCTION
 
   php_ogrdatasource_object *obj =
     (php_ogrdatasource_object *)emalloc(sizeof(php_ogrdatasource_object));
@@ -135,6 +135,8 @@ PHP_METHOD(OGRDataSource, GetName)
   OGRDataSource *datasource;
   php_ogrdatasource_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -155,6 +157,8 @@ PHP_METHOD(OGRDataSource, GetLayerCount)
   OGRDataSource *datasource;
   php_ogrdatasource_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -172,6 +176,8 @@ PHP_METHOD(OGRDataSource, GetLayer)
   OGRLayer *layer;
   php_ogrlayer_object *layer_obj;
   long index;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &index) == FAILURE) {
@@ -214,6 +220,8 @@ PHP_METHOD(OGRDataSource, GetLayerByName)
   char *name;
   int name_len;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"s",
                             &name, &name_len) == FAILURE) {
     return;
@@ -252,6 +260,8 @@ PHP_METHOD(OGRDataSource, DeleteLayer)
   php_ogrdatasource_object *obj;
   long index;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &index) == FAILURE) {
     return;
@@ -271,6 +281,8 @@ PHP_METHOD(OGRDataSource, TestCapability)
   php_ogrdatasource_object *obj;
   char *strcapability = NULL;
   int strcapability_len;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"s",
                             &strcapability, &strcapability_len) == FAILURE) {
@@ -297,6 +309,8 @@ PHP_METHOD(OGRDataSource, CreateLayer)
   OGRDataSource *datasource;
   OGRLayer *layer;
   php_ogrlayer_object *layer_obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"s|O!l",
                             &name, &name_len, &spatialrefp,
@@ -333,6 +347,8 @@ PHP_METHOD(OGRDataSource, SyncToDisk)
   php_ogrdatasource_object *obj;
   OGRErr error;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -350,6 +366,8 @@ PHP_METHOD(OGRDataSource, GetDriver)
   OGRSFDriver *driver;
   php_ogrdatasource_object *obj;
   driver_object *driver_obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
@@ -375,6 +393,8 @@ PHP_METHOD(OGRDataSource, Reference)
   OGRDataSource *datasource;
   php_ogrdatasource_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -389,6 +409,8 @@ PHP_METHOD(OGRDataSource, Dereference)
 {
   OGRDataSource *datasource;
   php_ogrdatasource_object *obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
@@ -405,6 +427,8 @@ PHP_METHOD(OGRDataSource, GetRefCount)
   OGRDataSource *datasource;
   php_ogrdatasource_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -420,6 +444,8 @@ PHP_METHOD(OGRDataSource, Close)
   OGRDataSource *datasource;
   php_ogrdatasource_object *obj;
   zval *p;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
@@ -442,6 +468,8 @@ PHP_METHOD(OGRDataSource, DestroyDataSource)
   OGRDataSource *datasource;
   php_ogrdatasource_object *obj;
   zval *p;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"O",
                             &p, gdal_ogrdatasource_ce) == FAILURE) {

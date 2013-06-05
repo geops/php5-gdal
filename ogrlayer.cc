@@ -33,6 +33,7 @@
 #include "ogrenvelope.h"
 #include "ogrspatialreference.h"
 #include "ogrfeature.h"
+#include "debug.h"
 
 zend_class_entry *gdal_ogrlayer_ce;
 zend_object_handlers ogrlayer_object_handlers;
@@ -44,6 +45,9 @@ zend_object_handlers ogrlayer_object_handlers;
 void ogrlayer_free_storage(void *object TSRMLS_DC)
 {
   php_ogrlayer_object *obj = (php_ogrlayer_object *)object;
+
+  DEBUG_LOG_FUNCTION
+
   //delete obj->layer; // TODO
   ////
   // char *msg; int i;
@@ -61,6 +65,8 @@ zend_object_value ogrlayer_create_handler(zend_class_entry *type TSRMLS_DC)
 {
   zval *tmp;
   zend_object_value retval;
+
+  DEBUG_LOG_FUNCTION
 
   php_ogrlayer_object *obj =
     (php_ogrlayer_object *)emalloc(sizeof(php_ogrlayer_object));
@@ -96,6 +102,8 @@ PHP_METHOD(OGRLayer, SetSpatialFilterRect)
   php_ogrlayer_object *obj;
   double min_x, min_y, max_x, max_y;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"dddd",
                             &min_x, &min_y, &max_x, &max_y) == FAILURE) {
     return;
@@ -114,6 +122,8 @@ PHP_METHOD(OGRLayer, SetAttributeFilter)
   char *filter;
   int filter_len;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"s",
                             &filter, &filter_len) == FAILURE) {
     return;
@@ -131,6 +141,8 @@ PHP_METHOD(OGRLayer, ResetReading)
   OGRLayer *layer;
   php_ogrlayer_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -147,6 +159,8 @@ PHP_METHOD(OGRLayer, GetNextFeature)
   php_ogrlayer_object *obj;
   OGRFeature *feature;
   php_ogrfeature_object *feature_obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
@@ -176,6 +190,8 @@ PHP_METHOD(OGRLayer, SetNextByIndex)
   php_ogrlayer_object *obj;
   long index;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &index) == FAILURE) {
     return;
@@ -194,6 +210,8 @@ PHP_METHOD(OGRLayer, GetFeature)
   OGRFeature *feature;
   php_ogrfeature_object *feature_obj;
   long fid;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &fid) == FAILURE) {
@@ -226,6 +244,8 @@ PHP_METHOD(OGRLayer, SetFeature)
   zval *featurep;
   php_ogrfeature_object *feature_obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"O",
                             &featurep, gdal_ogrfeature_ce) == FAILURE) {
     return;
@@ -250,6 +270,8 @@ PHP_METHOD(OGRLayer, CreateFeature)
   zval *featurep;
   php_ogrfeature_object *feature_obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"O",
                             &featurep, gdal_ogrfeature_ce) == FAILURE) {
     return;
@@ -272,6 +294,8 @@ PHP_METHOD(OGRLayer, DeleteFeature)
   php_ogrlayer_object *obj;
   long fid;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &fid) == FAILURE) {
     return;
@@ -289,6 +313,8 @@ PHP_METHOD(OGRLayer, GetLayerDefn)
   php_ogrlayer_object *obj;
   OGRFeatureDefn *featuredefn;
   php_ogrfeaturedefn_object *defn_obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
@@ -315,6 +341,8 @@ PHP_METHOD(OGRLayer, GetSpatialRef)
   php_ogrlayer_object *obj;
   OGRSpatialReference *spatialreference;
   php_ogrspatialreference_object *spatialreference_obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
@@ -343,6 +371,8 @@ PHP_METHOD(OGRLayer, GetFeatureCount)
   long index;
   zend_bool force = 1;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"|b",
                             &force) == FAILURE) {
     return;
@@ -362,6 +392,8 @@ PHP_METHOD(OGRLayer, GetExtent)
   php_ogrenvelope_object *envelope_obj;
   OGRErr error;
   zend_bool bforce;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"b",
                             &bforce) == FAILURE) {
@@ -399,6 +431,8 @@ PHP_METHOD(OGRLayer, TestCapability)
   char *strcapability = NULL;
   int strcapability_len;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"s",
                             &strcapability, &strcapability_len) == FAILURE) {
     return;
@@ -418,6 +452,8 @@ PHP_METHOD(OGRLayer, GetInfo)
   OGRErr error;
   char *name;
   int name_len;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"s",
                             &name, &name_len) == FAILURE) {
@@ -446,6 +482,8 @@ PHP_METHOD(OGRLayer, CreateField)
   php_ogrfielddefn_object *fielddefn_obj;
   zend_bool approx_ok = 1;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"O|b",
                             &fielddefnp, gdal_ogrfielddefn_ce,
                             &approx_ok) == FAILURE) {
@@ -469,6 +507,8 @@ PHP_METHOD(OGRLayer, SyncToDisk)
   php_ogrlayer_object *obj;
   OGRErr error;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -485,6 +525,8 @@ PHP_METHOD(OGRLayer, StartTransaction)
   OGRLayer *layer;
   php_ogrlayer_object *obj;
   OGRErr error;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
@@ -503,6 +545,8 @@ PHP_METHOD(OGRLayer, CommitTransaction)
   php_ogrlayer_object *obj;
   OGRErr error;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -520,6 +564,8 @@ PHP_METHOD(OGRLayer, RollbackTransaction)
   php_ogrlayer_object *obj;
   OGRErr error;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -535,6 +581,8 @@ PHP_METHOD(OGRLayer, GetFIDColumn)
 {
   OGRLayer *layer;
   php_ogrlayer_object *obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
@@ -556,6 +604,8 @@ PHP_METHOD(OGRLayer, GetGeometryColumn)
   OGRLayer *layer;
   php_ogrlayer_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -576,6 +626,8 @@ PHP_METHOD(OGRLayer, Reference)
   OGRLayer *layer;
   php_ogrlayer_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -590,6 +642,8 @@ PHP_METHOD(OGRLayer, Dereference)
 {
   OGRLayer *layer;
   php_ogrlayer_object *obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
@@ -606,6 +660,8 @@ PHP_METHOD(OGRLayer, GetRefCount)
   OGRLayer *layer;
   php_ogrlayer_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     return;
   }
@@ -620,6 +676,8 @@ PHP_METHOD(OGRLayer, GetFeaturesRead)
 {
   OGRLayer *layer;
   php_ogrlayer_object *obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (ZEND_NUM_ARGS() != 0) {
     return;

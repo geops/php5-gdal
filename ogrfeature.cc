@@ -30,6 +30,7 @@
 #include "ogrgeometry.h"
 #include "ogrfeaturedefn.h"
 #include "ogrfielddefn.h"
+#include "debug.h"
 
 zend_class_entry *gdal_ogrfeature_ce;
 zend_object_handlers ogrfeature_object_handlers;
@@ -41,6 +42,9 @@ zend_object_handlers ogrfeature_object_handlers;
 void ogrfeature_free_storage(void *object TSRMLS_DC)
 {
   php_ogrfeature_object *obj = (php_ogrfeature_object *)object;
+
+  DEBUG_LOG_FUNCTION
+
   // TODO: check ownership
   // OGRFeature::DestroyFeature(obj->feature);
   zend_hash_destroy(obj->std.properties);
@@ -52,6 +56,8 @@ zend_object_value ogrfeature_create_handler(zend_class_entry *type TSRMLS_DC)
 {
   zval *tmp;
   zend_object_value retval;
+
+  DEBUG_LOG_FUNCTION
 
   php_ogrfeature_object *obj =
     (php_ogrfeature_object *)emalloc(sizeof(php_ogrfeature_object));
@@ -88,6 +94,8 @@ PHP_METHOD(OGRFeature, GetDefnRef)
   OGRFeatureDefn *featuredefn;
   php_ogrfeaturedefn_object *featuredefn_obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -113,6 +121,8 @@ PHP_METHOD(OGRFeature, GetFieldCount)
   OGRFeature *feature;
   php_ogrfeature_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -130,6 +140,8 @@ PHP_METHOD(OGRFeature, GetFieldDefnRef)
   OGRFieldDefn *fielddefn;
   php_ogrfielddefn_object *fielddefn_obj;
   long index;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &index) == FAILURE) {
@@ -159,6 +171,8 @@ PHP_METHOD(OGRFeature, GetFieldIndex)
   char *name;
   int name_len;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"s",
                             &name, &name_len) == FAILURE) {
     return;
@@ -175,6 +189,8 @@ PHP_METHOD(OGRFeature, IsFieldSet)
   OGRFeature *feature;
   php_ogrfeature_object *obj;
   long idx;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &idx) == FAILURE) {
@@ -194,6 +210,8 @@ PHP_METHOD(OGRFeature, UnsetField)
   php_ogrfeature_object *obj;
   long idx;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &idx) == FAILURE) {
     return;
@@ -211,6 +229,8 @@ PHP_METHOD(OGRFeature, GetFieldAsInteger)
   OGRFeature *feature;
   php_ogrfeature_object *obj;
   long idx;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &idx) == FAILURE) {
@@ -230,6 +250,8 @@ PHP_METHOD(OGRFeature, GetFieldAsDouble)
   php_ogrfeature_object *obj;
   long idx;
 
+  DEBUG_LOG_FUNCTION
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &idx) == FAILURE) {
     return;
@@ -247,6 +269,8 @@ PHP_METHOD(OGRFeature, GetFieldAsString)
   OGRFeature *feature;
   php_ogrfeature_object *obj;
   long idx;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &idx) == FAILURE) {
@@ -266,6 +290,8 @@ PHP_METHOD(OGRFeature, GetFID)
   OGRFeature *feature;
   php_ogrfeature_object *obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     return;
   }
@@ -282,6 +308,8 @@ PHP_METHOD(OGRFeature, SetFID)
   OGRFeature *feature;
   php_ogrfeature_object *obj;
   long fid;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"l",
                             &fid) == FAILURE) {
@@ -303,6 +331,8 @@ PHP_METHOD(OGRFeature, SetFrom)
   php_ogrfeature_object *from_feature_obj;
   OGRFeature *feature;
   php_ogrfeature_object *obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"O|b",
                             &from_featurep, gdal_ogrfeature_ce,
@@ -328,6 +358,8 @@ PHP_METHOD(OGRFeature, CreateFeature)
   OGRFeatureDefn *featuredefn;
   OGRFeature *feature;
   php_ogrfeature_object *feature_obj;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"O",
                             &featuredefnp, gdal_ogrfeaturedefn_ce)
@@ -360,6 +392,8 @@ PHP_METHOD(OGRFeature, GetGeometryRef)
   php_ogrfeature_object *obj;
   php_ogrgeometry_object *geom_obj;
 
+  DEBUG_LOG_FUNCTION
+
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
@@ -387,6 +421,8 @@ PHP_METHOD(OGRFeature, DestroyFeature)
   OGRFeature *feature;
   php_ogrfeature_object *obj;
   zval *p;
+
+  DEBUG_LOG_FUNCTION
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, (char*)"O",
                             &p, gdal_ogrfeature_ce) == FAILURE) {
