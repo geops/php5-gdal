@@ -29,6 +29,7 @@
 #include "cpl_string.h"
 #include "cpl_port.h"
 #include "cpl.h"
+#include "debug.h"
 
 PHP_FUNCTION(cplerrorreset)
 {
@@ -36,7 +37,7 @@ PHP_FUNCTION(cplerrorreset)
     WRONG_PARAM_COUNT;
   }
 
-  php_log_err("php5-gdal: CPLErrorReset");
+  DEBUG_LOG("php5-gdal: CPLErrorReset");
   CPLErrorReset();
 }
 
@@ -47,7 +48,7 @@ PHP_FUNCTION(cplgetlasterrorno)
     WRONG_PARAM_COUNT;
   }
 
-  php_log_err("php5-gdal: CPLGetLastErrorNo");
+  DEBUG_LOG("php5-gdal: CPLGetLastErrorNo");
   RETURN_LONG(CPLGetLastErrorNo());
 }
 
@@ -57,7 +58,7 @@ PHP_FUNCTION(cplgetlasterrortype)
   if (ZEND_NUM_ARGS() != 0) {
     WRONG_PARAM_COUNT;
   }
-  php_log_err("php5-gdal: CPLGetLastErrorType");
+  DEBUG_LOG("php5-gdal: CPLGetLastErrorType");
   RETURN_LONG(CPLGetLastErrorType());
 }
 
@@ -70,7 +71,7 @@ PHP_FUNCTION(cplgetlasterrormsg)
     WRONG_PARAM_COUNT;
   }
 
-  php_log_err("php5-gdal: CPLGetLastErrorMsg");
+  DEBUG_LOG("php5-gdal: CPLGetLastErrorMsg");
   if ((pszMsg = CPLGetLastErrorMsg()) != NULL) {
     RETURN_STRING((char *)pszMsg, 1);
   } else {
@@ -91,7 +92,7 @@ PHP_FUNCTION(cplsetconfigoption)
                             &value, &value_len) == FAILURE)
     return;
 
-  php_log_err("php5-gdal: CPLSetConfigOption");
+  DEBUG_LOG("php5-gdal: CPLSetConfigOption");
   CPLSetConfigOption(key, value);
 }
 
@@ -109,7 +110,7 @@ PHP_FUNCTION(cplgetconfigoption)
                             &_default, &_default_len) == FAILURE)
     return;
 
-  php_log_err("php5-gdal: CPLGetConfigOption");
+  DEBUG_LOG("php5-gdal: CPLGetConfigOption");
   value = CPLGetConfigOption(key, _default);
   if (value) {
     RETURN_STRING((char *)value, 1);
