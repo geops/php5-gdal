@@ -1,0 +1,59 @@
+#!/usr/bin/make -f
+export DH_VERBOSE=1
+
+DEB_HOST_GNU_TYPE    ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+PHP_MAJOR := 5
+DESTDIR=debian/php5-gdal
+
+CFLAGS = -O2 -Wall -fno-strict-aliasing
+
+# Enable IEEE-conformant floating point math on alphas (not the default)
+ifeq (alpha-linux-gnu,$(DEB_HOST_GNU_TYPE))
+  CFLAGS += -mieee
+endif
+
+build: build-stamp
+
+build-stamp: 
+	dh build
+	sed "s#@EXTDIR@#`php-config$(PHP_MAJOR) --extension-dir`#" debian/gdal.ini.in > debian/gdal.ini
+	touch $@
+
+override_dh_outo_build:
+	$(MAKE) all
+
+override_dh_auto_configure:
+	phpize$(PHP_MAJOR) --clean
+	phpize$(PHP_MAJOR)
+	dh_auto_configure
+    
+override_dh_auto_clean:
+	dh_auto_clean
+	phpize$(PHP_MAJOR) --clean
+
+clean:
+	dh clean
+
+override_dh_auto_install:
+	$(MAKE) install INSTALL_ROOT=$(DESTDIR)
+	install -D -m 644 debian/gdal.ini $(DESTDIR)/etc/php$(PHP_MAJOR)/conf.d/gdal.ini
+
+__override_dh_fixperms:
+	dh_fixperms
+	find $(DESTDIR)/usr/share/gdal -type f -print0 | xargs -0 chmod 644
+
+install: build
+	dh install
+
+# Build architecture-independent files here.
+binary-indep:
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	echo "php:Depends=phpapi-`php-config$(PHP_MAJOR) --phpapi`" >> debian/php5-gdal.substvars
+	dh binary-arch
+
+binary: binary-arch binary-indep
+.PHONY: build clean binary-indep binary-arch binary install configure
+

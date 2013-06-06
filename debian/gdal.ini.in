@@ -1,0 +1,2 @@
+; load GDAL extension
+extension=gdal.so

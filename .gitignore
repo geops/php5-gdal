@@ -26,3 +26,4 @@ missing
 mkinstalldirs
 modules/
 run-tests.php
+build-stamp

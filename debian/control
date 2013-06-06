@@ -1,0 +1,12 @@
+Source: php5-gdal
+Section: php
+Priority: optional
+Maintainer: Nico Mandery <nico.mandery@geops.de>
+Build-Depends: debhelper (>= 7.0.50~), php5-dev, libgdal1-dev (>= 1.7.3)
+Standards-Version: 3.9.2
+Homepage: https://github.com/geops/php5-gdal
+
+Package: php5-gdal
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${php:Depends}
+Description: Inofficial bindings to the GDAL library
