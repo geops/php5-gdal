@@ -337,6 +337,7 @@ static zend_function_entry gdal_functions[] = {
   PHP_FE(ogrregisterall, NULL)
   //PHP_FE(ogrcleanupall, NULL)
   PHP_FE(gdalversioninfo, NULL)
+  PHP_FE(gdalextversioninfo, NULL)
   PHP_FE(gdalopen, NULL)
   PHP_FE(gdalopenshared, NULL)
   PHP_FE(getgdaldrivermanager, NULL)

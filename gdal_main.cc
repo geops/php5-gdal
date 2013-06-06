@@ -29,9 +29,10 @@
 #include "gdal_main.h"
 #include "gdaldataset.h"
 #include "gdaldrivermanager.h"
+#include "version.h"
 
 #ifndef GDAL_H_INCLUDED
-#error "grrr"
+#error "GDAL headers have not been included"
 #endif
 
 /**
@@ -54,6 +55,15 @@ PHP_FUNCTION(gdalversioninfo)
     RETURN_NULL();
   }
 }
+
+/**
+ * version number of this extension
+ */
+PHP_FUNCTION(gdalextversioninfo)
+{
+    RETURN_STRING(PHPGDAL_VERSION_FULL, 1);
+}
+
 
 PHP_FUNCTION(gdalopen)
 {

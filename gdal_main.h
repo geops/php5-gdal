@@ -28,6 +28,7 @@
 #define PHP_GDAL_MAIN_H_
 
 PHP_FUNCTION(gdalversioninfo);
+PHP_FUNCTION(gdalextversioninfo);
 PHP_FUNCTION(gdalopen);
 PHP_FUNCTION(gdalopenshared);
 PHP_FUNCTION(getgdaldrivermanager);

@@ -1,0 +1,16 @@
+#ifndef __gdal_version_h__
+#define __gdal_version_h__
+
+#include "debug.h"
+
+#define PHPGDAL_VERSION_MAJOR 0
+#define PHPGDAL_VERSION_MINOR 1
+#define PHPGDAL_VERSION_PATCH 3
+#define PHPGDAL_VERSION_SUFFIX ""
+
+#define PHPGDAL_VERSION_FULL STRINGIFY(PHPGDAL_VERSION_MAJOR) "." \
+        STRINGIFY(PHPGDAL_VERSION_MINOR) "." \
+        STRINGIFY(PHPGDAL_VERSION_PATCH) \
+        PHPGDAL_VERSION_SUFFIX
+
+#endif
