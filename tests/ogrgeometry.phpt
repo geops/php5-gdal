@@ -1,7 +1,5 @@
 --TEST--
 Test: OGRGeometry
---SKIPIF--
-<?php if (!extension_loaded("gdal")) print "skip"; ?>
 --FILE--
 <?php
 OGRRegisterAll();
