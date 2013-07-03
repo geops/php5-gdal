@@ -180,6 +180,8 @@ PHP_METHOD(GDALDriverManager, RegisterDriver)
   RETURN_LONG(drivermanager->RegisterDriver(driver));
 }
 
+#if 0 // currently disabled as the method causes errors
+      // when symbol can not be resolved by gcc
 PHP_METHOD(GDALDriverManager, MoveDriver)
 {
   GDALDriverManager *drivermanager;
@@ -205,6 +207,7 @@ PHP_METHOD(GDALDriverManager, MoveDriver)
 
   drivermanager->MoveDriver(driver, i);
 }
+#endif
 
 PHP_METHOD(GDALDriverManager, DeregisterDriver)
 {
@@ -309,7 +312,10 @@ zend_function_entry gdaldrivermanager_methods[] = {
   PHP_ME(GDALDriverManager, GetDriver, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(GDALDriverManager, GetDriverByName, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(GDALDriverManager, RegisterDriver, NULL, ZEND_ACC_PUBLIC)
+#if 0 // currently disabled as the method causes errors
+      // when symbol can not be resolved by gcc
   PHP_ME(GDALDriverManager, MoveDriver, NULL, ZEND_ACC_PUBLIC)
+#endif
   PHP_ME(GDALDriverManager, DeregisterDriver, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(GDALDriverManager, AutoLoadDrivers, NULL, ZEND_ACC_PUBLIC)
   PHP_ME(GDALDriverManager, AutoSkipDrivers, NULL, ZEND_ACC_PUBLIC)
