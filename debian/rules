@@ -37,7 +37,8 @@ clean:
 
 override_dh_auto_install:
 	$(MAKE) install INSTALL_ROOT=$(DESTDIR)
-	install -D -m 644 debian/gdal.ini $(DESTDIR)/etc/php$(PHP_MAJOR)/conf.d/gdal.ini
+	install -D -m 644 debian/gdal.ini $(DESTDIR)/etc/php$(PHP_MAJOR)/mods-available/gdal.ini
+	php5enmod -s ALL gdal
 
 __override_dh_fixperms:
 	dh_fixperms
